@@ -10,6 +10,7 @@ import java.awt.Image;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 /**
@@ -96,10 +97,7 @@ public class menuOptions1 extends javax.swing.JFrame {
         dataTable1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         dataTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "Área de estudio", "Cantidad mínima de cursos", "Tiempo total de horas a dedicar"
@@ -127,6 +125,11 @@ public class menuOptions1 extends javax.swing.JFrame {
         myButton3.setText("Borrar datos");
         myButton3.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
         myButton3.setRadius(35);
+        myButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                myButton3ActionPerformed(evt);
+            }
+        });
         jPanel1.add(myButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 320, 190, 40));
 
         myButton4.setBackground(new java.awt.Color(154, 246, 73));
@@ -152,6 +155,11 @@ public class menuOptions1 extends javax.swing.JFrame {
         myButton6.setText("Borrar fila seleccionada");
         myButton6.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         myButton6.setRadius(35);
+        myButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                myButton6ActionPerformed(evt);
+            }
+        });
         jPanel1.add(myButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 270, 190, 40));
 
         txtHoras.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -233,7 +241,7 @@ public class menuOptions1 extends javax.swing.JFrame {
         //Validar campos llenos
         try {
             if(area.equals("") || cantidad.equals("") || horas.equals("")){
-            JOptionPane.showMessageDialog(
+                JOptionPane.showMessageDialog(
                     this, "Debe llenar todos los campos");
             }
             else
@@ -257,12 +265,21 @@ public class menuOptions1 extends javax.swing.JFrame {
 
                     else{
                         System.out.println("Todo bien");
+                        addNewItem(area, cantidad, horas);
                     }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(
                             this, "Los datos ingresados no son válidos");
         }
     }//GEN-LAST:event_myButton2ActionPerformed
+
+    private void myButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myButton3ActionPerformed
+        cleanTable();
+    }//GEN-LAST:event_myButton3ActionPerformed
+
+    private void myButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myButton6ActionPerformed
+        deleteEspecificRow();
+    }//GEN-LAST:event_myButton6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -332,6 +349,55 @@ public class menuOptions1 extends javax.swing.JFrame {
         }
         // return 0 if digit not present
         return false;
+    }
+    
+    private void addNewItem(
+            String nombre, String cantidad, String tiempo){
+        
+        DefaultTableModel model = 
+                (DefaultTableModel) this.dataTable1.getModel();
+        
+        String newRow [] = {nombre,cantidad,tiempo};
+        model.addRow(newRow);
+        this.dataTable1.setRowHeight(35);
+        
+        //Clean text field
+        this.txtArea.setText("");
+        this.txtCursos.setText("");
+        this.txtHoras.setText("");
+    }
+    
+    private void cleanTable(){
+        DefaultTableModel model = 
+                (DefaultTableModel) this.dataTable1.getModel();
+        
+        model.setRowCount(0);
+        //Clean text field
+        this.txtArea.setText("");
+        this.txtCursos.setText("");
+        this.txtHoras.setText("");
+    }
+    
+    private void deleteEspecificRow(){
+        
+        DefaultTableModel model = 
+                (DefaultTableModel) this.dataTable1.getModel(); 
+        
+        int a = dataTable1.getSelectedRow(); 
+ 
+        if (a<0){ 
+            JOptionPane.showMessageDialog(this, 
+                        "Debe seleccionar una fila de la tabla" ); 
+
+        }else {
+            int confirmar=JOptionPane.showConfirmDialog(null, 
+                        "¿Eliminar el registro? "); 
+ 
+            if(JOptionPane.OK_OPTION==confirmar) {
+                model.removeRow(a); 
+                JOptionPane.showMessageDialog(this,"Registro Eliminado" );
+            } 
+        } 
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

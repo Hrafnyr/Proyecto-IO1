@@ -189,7 +189,7 @@ public class MainWindow extends javax.swing.JFrame {
         if(opMin.isSelected()){
             System.out.println("Minimizar, opción 1");
             
-            //Mostra ventana
+            //Mostrar ventana
             menuOptions1 newWindow = new menuOptions1();
             newWindow.setVisible(true);
             this.setVisible(false);
@@ -197,6 +197,10 @@ public class MainWindow extends javax.swing.JFrame {
         }
         else if(opAsig.isSelected()){
             System.out.println("Asignacion, opción 2");
+            //Mostrar ventana
+            menuOptions2 newWindow2 = new menuOptions2();
+            newWindow2.setVisible(true);
+            this.setVisible(false);
         }
     }//GEN-LAST:event_myButton1ActionPerformed
 
