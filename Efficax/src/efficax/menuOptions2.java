@@ -428,7 +428,14 @@ public class menuOptions2 extends javax.swing.JFrame {
                     this, "Los datos deben ser números");
             }
             else{
-                System.out.println("Todo bien");
+                //validar numeros mayores que cero
+                if(digitPositive()==false){
+                    JOptionPane.showMessageDialog(
+                        this, "Los datos deben ser positivos");
+                }
+                else{
+                    System.out.println("Todo bien");
+                }
             }
     }//GEN-LAST:event_btnCalcularActionPerformed
 
@@ -550,6 +557,21 @@ public class menuOptions2 extends javax.swing.JFrame {
                     String dato = this.tableEdit.getValueAt(i,j).toString();
                     int d = Integer.parseInt(dato);
                 } catch (Exception e) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+    
+    private boolean digitPositive(){
+
+        for (int i = 0; i < this.tableEdit.getRowCount(); i++) {
+            for (int j = 1; j < dias.size()+1; j++) {
+                String dato = this.tableEdit.getValueAt(i,j).toString();
+                int d = Integer.parseInt(dato);
+                if(d<=0){
                     return false;
                 }
             }

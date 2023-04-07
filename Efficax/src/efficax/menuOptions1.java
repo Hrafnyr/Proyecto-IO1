@@ -1,12 +1,12 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ PENDIENTE VALIDAR QUE DATOS DE NUMEROS VENGAN SIN ESPACIO ENTRE DIGITOS
  */
 package efficax;
 
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.List;
+import java.util.ArrayList;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -19,9 +19,13 @@ import javax.swing.table.JTableHeader;
  */
 public class menuOptions1 extends javax.swing.JFrame {
 
-    /**
-     * Creates new form menuOptions1
-     */
+    //Variables globales
+    int TotalCursos=0;
+    int variablesC=0;
+    ArrayList<classVariable> variablesData = new ArrayList();
+    ArrayList<String> variablesArticiales = new ArrayList();
+    ArrayList<ArrayList> matriz = new ArrayList();
+    
     public menuOptions1() {
         initComponents();
         SetImage1();
@@ -41,7 +45,7 @@ public class menuOptions1 extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         txtArea = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        txtCursos = new javax.swing.JTextField();
+        txtTotalCursos = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         myButton2 = new efficax.MyButton();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -56,6 +60,8 @@ public class menuOptions1 extends javax.swing.JFrame {
         labelImage1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        txtCursos1 = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Minimizar tiempo de estudio");
@@ -76,12 +82,12 @@ public class menuOptions1 extends javax.swing.JFrame {
         jLabel1.setText("Área de estudio");
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 120, 130, 30));
 
-        txtCursos.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jPanel1.add(txtCursos, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 160, 210, 30));
+        txtTotalCursos.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jPanel1.add(txtTotalCursos, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 380, 110, 30));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
-        jLabel2.setText("Cantidad mínima de cursos");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 120, 220, 30));
+        jLabel2.setText("Total de cursos a llevar");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 380, 200, 30));
 
         myButton2.setBackground(new java.awt.Color(255, 255, 102));
         myButton2.setText("Agregar");
@@ -100,7 +106,7 @@ public class menuOptions1 extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Área de estudio", "Cantidad mínima de cursos", "Tiempo total de horas a dedicar"
+                "Área de estudio", "Cantidad mínima de cursos", "Tiempo en horas a dedicar por curso"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -137,6 +143,11 @@ public class menuOptions1 extends javax.swing.JFrame {
         myButton4.setText("Calcular");
         myButton4.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
         myButton4.setRadius(35);
+        myButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                myButton4ActionPerformed(evt);
+            }
+        });
         jPanel1.add(myButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 390, 160, 50));
 
         backButton1.setBackground(new java.awt.Color(102, 0, 102));
@@ -198,12 +209,19 @@ public class menuOptions1 extends javax.swing.JFrame {
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 880, 100));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
-        jLabel5.setText("a dedicar en el semestre");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 130, -1, 30));
+        jLabel5.setText("a dedicar por curso");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 130, -1, 30));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
-        jLabel6.setText("Tiempo total de horas ");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 110, -1, 30));
+        jLabel6.setText("Tiempo en horas ");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 110, -1, 30));
+
+        txtCursos1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jPanel1.add(txtCursos1, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 160, 210, 30));
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
+        jLabel3.setText("Cantidad mínima de cursos");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 120, 220, 30));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -235,7 +253,7 @@ public class menuOptions1 extends javax.swing.JFrame {
     private void myButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myButton2ActionPerformed
         //Agregando datos a la tabla y validando campos
         String area      = this.txtArea.getText();
-        String cantidad  = this.txtCursos.getText();
+        String cantidad  = this.txtCursos1.getText();
         String horas     = this.txtHoras.getText();
         
         //Validar campos llenos
@@ -280,6 +298,30 @@ public class menuOptions1 extends javax.swing.JFrame {
     private void myButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myButton6ActionPerformed
         deleteEspecificRow();
     }//GEN-LAST:event_myButton6ActionPerformed
+
+    private void myButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myButton4ActionPerformed
+            // TODO add your handling code here:
+        String cursosT = this.txtTotalCursos.getText();
+        
+        if(cursosT.equals("")){
+            JOptionPane.showMessageDialog(
+                this, "Debe indicar el total de cursos que debe llevar");
+        }else
+            if(this.dataTable1.getRowCount()==0){
+                JOptionPane.showMessageDialog(
+                    this, "No se han agregado datos a la tabla");
+            }
+            else
+                if(this.dataTable1.getRowCount()==1){
+                    JOptionPane.showMessageDialog(
+                        this, "Debe ingresar mínimo 2 datos");
+                }
+                else{
+                    System.out.println("Todo bien");
+                    getDatafromTable();
+                    TotalCursos=Integer.parseInt(this.txtTotalCursos.getText());
+                }
+    }//GEN-LAST:event_myButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -357,13 +399,13 @@ public class menuOptions1 extends javax.swing.JFrame {
         DefaultTableModel model = 
                 (DefaultTableModel) this.dataTable1.getModel();
         
-        String newRow [] = {nombre,cantidad,tiempo};
+        String newRow [] = {nombre.trim(),cantidad.trim(),tiempo.trim()};
         model.addRow(newRow);
         this.dataTable1.setRowHeight(35);
         
         //Clean text field
         this.txtArea.setText("");
-        this.txtCursos.setText("");
+        this.txtCursos1.setText("");
         this.txtHoras.setText("");
     }
     
@@ -374,7 +416,7 @@ public class menuOptions1 extends javax.swing.JFrame {
         model.setRowCount(0);
         //Clean text field
         this.txtArea.setText("");
-        this.txtCursos.setText("");
+        this.txtCursos1.setText("");
         this.txtHoras.setText("");
     }
     
@@ -400,11 +442,322 @@ public class menuOptions1 extends javax.swing.JFrame {
         } 
     }
     
+    //Metodos para aplicar 2 fases
+    
+    private void getDatafromTable(){
+        int contVariables=0;
+        for (int i = 0; i < this.dataTable1.getRowCount(); i++) {
+            contVariables++;
+            variablesData.add(
+                new classVariable(
+                    "X"+String.valueOf(contVariables),
+                    String.valueOf(this.dataTable1.getValueAt(i,0)),0,
+                    Integer.parseInt(
+                        String.valueOf(this.dataTable1.getValueAt(i,1))),
+                    Integer.parseInt(
+                        String.valueOf(this.dataTable1.getValueAt(i,2))),
+                    "S"+String.valueOf(contVariables+1), 
+                    "R"+String.valueOf(contVariables+1)
+                )
+            );
+        }
+        variablesC=contVariables;
+        System.out.println(
+                "Trabajar con "+String.valueOf(contVariables)+" variables");
+        
+        //Crear la matriz
+        createMatrix();
+        
+    }
+    
+    private void createMatrix(){
+        
+        //fila R0, fila R1 (x+y=T), y filas por cada variable
+        int fila=2+variablesC; 
+        int cursos=Integer.parseInt(this.txtTotalCursos.getText());
+        //columnas x1,x2..,s2,s3...,R1,r2,r3...,Solucion
+        int columna=(variablesC*3)+2;
+        int cont=0;
+        
+        for (int i = 0; i < fila; i++) {
+            ArrayList<celda> filaM = new ArrayList();
+            //Primer fila es de R0
+            if (i==0) {
+                //5 vueltas
+                for (int t = 0; t < 5; t++) {
+                    //vuelta 1 para agregar variables
+                    if (t==0) {
+                        for (int a = 0; a < variablesData.size(); a++) {
+                            filaM.add(
+                            new celda("R0",variablesData.get(a).id,0));
+                        }
+                    }
+                    //vuelta 2 para agregar exceso
+                    if (t==1) {
+                        for (int a = 0; a < variablesData.size(); a++) {
+                            filaM.add(
+                            new celda("R0",variablesData.get(a).exceso,0));
+                        }
+                    }
+                    //vuelta 3 para agregar R1
+                    if (t==2) {
+                        filaM.add(
+                            new celda("R0","R1",-1));
+                    }
+                    //vuelta 4 para agregar artificiales
+                    if (t==3) {
+                        for (int a = 0; a < variablesData.size(); a++) {
+                            filaM.add(
+                            new celda("R0",variablesData.get(a).artificial,-1));
+                        }
+                    }
+                    //vuelta 5 para agregar solucion
+                    if (t==4) {
+                        filaM.add(
+                            new celda("R0","solucion",0));
+                    }
+                }
+                //agregar a matriz
+                matriz.add(filaM);
+                //limpiar fila
+                //filaM.clear();
+            }
+            //Fila 2 es para R1
+            else if (i==1) {
+                //5 vueltas
+                for (int t = 0; t < 5; t++) {
+                    //vuelta 1 para agregar variables
+                    if (t==0) {
+                        for (int a = 0; a < variablesData.size(); a++) {
+                            filaM.add(
+                            new celda("R1",variablesData.get(a).id,1));
+                        }
+                    }
+                    //vuelta 2 para agregar exceso
+                    if (t==1) {
+                        for (int a = 0; a < variablesData.size(); a++) {
+                            filaM.add(
+                            new celda("R1",variablesData.get(a).exceso,0));
+                        }
+                    }
+                    //vuelta 3 para agregar R1
+                    if (t==2) {
+                        filaM.add(
+                            new celda("R1","R1",1));
+                    }
+                    //vuelta 4 para agregar artificiales
+                    if (t==3) {
+                        for (int a = 0; a < variablesData.size(); a++) {
+                            filaM.add(
+                            new celda("R1",variablesData.get(a).artificial,0));
+                        }
+                    }
+                    //vuelta 5 para agregar solucion
+                    if (t==4) {
+                        filaM.add(
+                            new celda("R1","solucion",cursos));
+                    }
+                }
+                //agregar a matriz
+                matriz.add(filaM);
+                //limpiar fila
+                //filaM.clear();
+            }
+            //En caso contrario las demás filas corresponden a variables
+            //artificiales de cada variable
+            else{
+                for (int t = 0; t < 5; t++) {
+                    //vuelta 1 para agregar variables
+                    if (t==0) {
+                        for (int a = 0; a < variablesData.size(); a++) {
+                            if(a==cont){
+                                filaM.add(
+                                new celda(variablesData.get(cont).artificial,
+                                        variablesData.get(a).id,1));
+                            }
+                            else{
+                                filaM.add(
+                                new celda(variablesData.get(cont).artificial,
+                                        variablesData.get(a).id,0));
+                            }
+                        }
+                    }
+                    //vuelta 2 para agregar exceso
+                    if (t==1) {
+                        for (int a = 0; a < variablesData.size(); a++) {
+                             if(a==cont){
+                                filaM.add(
+                                new celda(variablesData.get(cont).artificial,
+                                        variablesData.get(a).exceso,-1));
+                            }
+                            else{
+                                filaM.add(
+                                new celda(variablesData.get(cont).artificial,
+                                        variablesData.get(a).exceso,0));
+                            }
+                        }
+                    }
+                    //vuelta 3 para agregar R1
+                    if (t==2) {
+                        filaM.add(
+                            new celda(variablesData.get(cont).artificial,
+                                        "R1",0));
+                    }
+                    //vuelta 4 para agregar artificiales
+                    if (t==3) {
+                        for (int a = 0; a < variablesData.size(); a++) {
+                             if(a==cont){
+                                filaM.add(
+                                new celda(variablesData.get(cont).artificial,
+                                        variablesData.get(a).artificial,1));
+                            }
+                            else{
+                                filaM.add(
+                                new celda(variablesData.get(cont).artificial,
+                                        variablesData.get(a).artificial,0));
+                            }
+                        }
+                    }
+                    //vuelta 5 para agregar solucion
+                    if (t==4) {
+                        filaM.add(
+                            new celda(variablesData.get(cont).artificial,
+                                "solucion",variablesData.get(cont).cantMin));
+                    }
+                }
+                //agregar a matriz
+                matriz.add(filaM);
+                //limpiar fila
+                //filaM.clear();
+                cont++;
+            }
+            
+        }
+        
+        showMatrix(columna);
+        
+        //Guardar las variables artificiales para comparar en fase 1
+        variablesArticiales.add("R1");
+        for (int i = 0; i < variablesData.size(); i++) {
+            variablesArticiales.add(variablesData.get(i).artificial);
+        }
+        startFase1();
+    }
+    
+    private void showMatrix(int columnas){
+        System.out.println("Mostrando matriz");
+        for(ArrayList<celda> arr : matriz) {
+            for(celda i : arr) {
+                System.out.print(i.valor);
+                System.out.print("    ");
+               
+            }
+             System.out.println("");
+        }
+    }
+    
+    private void startFase1(){
+        
+        //Paso 1, sumar R0 (fila 1) con las demás filas
+        
+        ArrayList<celda> arr = matriz.get(0); //Capturar fila 1
+        
+        for (int i = 1; i < matriz.size(); i++) { //Recorrer demás filas
+            ArrayList<celda> aux = matriz.get(i); //Capturar fila n
+            
+            //Recorrer elementos para sumar los valores fila 1  y siguiente
+            for (int j = 0; j < arr.size(); j++) {
+                double nuevoValor= arr.get(j).valor+aux.get(j).valor;
+                arr.get(j).setValor(nuevoValor);
+            }
+            System.out.println("");
+        }
+                
+        showMatrix(0);
+        
+        //Llamada de método recursivo que permite aplicar algoritmo de 1 fase
+        fase1();
+    }
+    
+    private void fase1(){
+        //Hallar el más positivo 
+        ArrayList<celda> arr = matriz.get(0); //Capturar fila 1
+        
+        //Buscar el más positivo
+        int index=1;
+        String column_b=arr.get(0).columna;
+        double mayor = arr.get(0).valor;
+        while (index < arr.size()-1) {    
+            
+            if (arr.get(index).valor > mayor) {
+                    System.out.println("Entrando");
+                    mayor = arr.get(index).valor;
+                    column_b = arr.get(index).columna;
+                    System.out.println(column_b);
+            }
+            index++;
+        }
+        System.out.println(column_b);
+        
+        //Ahora se hace prueba del cociente:
+
+        ArrayList<celda> datosC = new ArrayList<>();
+        ArrayList<celda> solucionesC = new ArrayList<>();
+        
+        for (int i = 1; i < matriz.size(); i++) { //Recorrer demás filas
+            ArrayList<celda> aux = matriz.get(i); //Capturar fila n
+            
+            //Recorrer elementos de fila para obtener celdas
+            for (int j = 0; j < aux.size(); j++) {
+                if(aux.get(j).columna.equals(column_b)){ //hallar columna
+                    datosC.add(aux.get(j));
+                }
+                if(aux.get(j).columna.equals("solucion")){
+                    solucionesC.add(aux.get(j));
+                }
+            }
+        }
+        
+        
+        //Ahora se analiza la prueba
+        celda tmp=null;
+        
+        double menor=solucionesC.get(0).valor/datosC.get(0).valor;
+        
+        System.out.println(menor);
+        
+        for (int i = 1; i < datosC.size(); i++) {  
+            double actual=solucionesC.get(i).valor/datosC.get(i).valor;
+            System.out.println(actual);
+            
+            if(actual < menor) {
+                menor=actual;
+                tmp=datosC.get(i);
+            }  
+        }
+        
+        System.out.println("El elegido es: "+tmp.valor+",en fila: "+tmp.fila+" y columna: "+tmp.columna);
+        
+        //Ahora se verifica que el valor de celda sea 1, sino hacerlo 1 y operar toda la fila
+        
+        
+        //Luego hacer 0 celdas de arriba y abajo, implica operar demás valores de filas
+        
+        //Repetir el proceso de forma recursiva, pero validar si se sigue o no
+        
+        //Cuando cumpla condicion de salida entonces fase 1 terminada.
+        
+        
+        
+        
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private efficax.MyButton backButton1;
     private javax.swing.JTable dataTable1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -417,7 +770,8 @@ public class menuOptions1 extends javax.swing.JFrame {
     private efficax.MyButton myButton4;
     private efficax.MyButton myButton6;
     private javax.swing.JTextField txtArea;
-    private javax.swing.JTextField txtCursos;
+    private javax.swing.JTextField txtCursos1;
     private javax.swing.JTextField txtHoras;
+    private javax.swing.JTextField txtTotalCursos;
     // End of variables declaration//GEN-END:variables
 }
