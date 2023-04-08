@@ -646,13 +646,16 @@ public class menuOptions1 extends javax.swing.JFrame {
     
     private void showMatrix(int columnas){
         System.out.println("Mostrando matriz");
+        int cont=0;
         for(ArrayList<celda> arr : matriz) {
             for(celda i : arr) {
+                //System.out.print(i.fila);
+                //System.out.print(i.columna);
+                //System.out.print("    ");
                 System.out.print(i.valor);
                 System.out.print("    ");
-               
             }
-             System.out.println("");
+            System.out.println("");
         }
     }
     
@@ -680,6 +683,7 @@ public class menuOptions1 extends javax.swing.JFrame {
     }
     
     private void fase1(){
+        
         //Hallar el más positivo 
         ArrayList<celda> arr = matriz.get(0); //Capturar fila 1
         
@@ -697,59 +701,176 @@ public class menuOptions1 extends javax.swing.JFrame {
             }
             index++;
         }
-        System.out.println(column_b);
+        if(mayor > 0){ //El valor mayor siempre deber ser positivo, de no cumplir pasa a verificar la condicion
         
-        //Ahora se hace prueba del cociente:
+            System.out.println("Columna pivote:"+column_b);
 
-        ArrayList<celda> datosC = new ArrayList<>();
-        ArrayList<celda> solucionesC = new ArrayList<>();
-        
-        for (int i = 1; i < matriz.size(); i++) { //Recorrer demás filas
-            ArrayList<celda> aux = matriz.get(i); //Capturar fila n
+            //Ahora se hace prueba del cociente:
+            double numerador=0;
+            double denominador=0;
+           
+            //Ahora se analiza la prueba
+            celda tmp=null;
+            int indiceTMP=1;
             
-            //Recorrer elementos de fila para obtener celdas
-            for (int j = 0; j < aux.size(); j++) {
-                if(aux.get(j).columna.equals(column_b)){ //hallar columna
-                    datosC.add(aux.get(j));
+            ArrayList<Double> datosC = new ArrayList<>(); //guardar cocientes
+            ArrayList<Integer> indicesC = new ArrayList<>(); //guardar indices
+            ArrayList<celda> menores = new ArrayList<>(); //guardar cocientes menores
+            
+            for (int i = 1; i < matriz.size(); i++) { //Recorrer demás filas
+                ArrayList<celda> aux = matriz.get(i); //Capturar fila n
+
+                //Recorrer elementos de fila para obtener celdas
+                int c=0;
+                for (int j = 0; j < aux.size(); j++) {
+                    if(aux.get(j).columna.equals(column_b)){ //hallar columna
+                        //datosC.add(aux.get(j));
+                        denominador=aux.get(j).valor;
+                        c=j;
+                    }
+                    if(aux.get(j).columna.equals("solucion")){
+                        //solucionesC.add(aux.get(j));
+                        numerador=aux.get(j).valor;
+                    }
                 }
-                if(aux.get(j).columna.equals("solucion")){
-                    solucionesC.add(aux.get(j));
+                
+                //validar solo positivos
+                if(numerador>0 && denominador > 0){
+                    double total= numerador/denominador;
+                    indiceTMP=i;
+                    datosC.add(total);
+                    indicesC.add(indiceTMP);
+                    menores.add(aux.get(c)); //guardar la celda 
+                }
+                
+            }            
+            
+            double menor=datosC.get(0);
+
+            System.out.println("Valor menor inicial:"+menor);
+            int tt=0;
+            if(datosC.size()==1){
+                tmp=menores.get(0);
+                tt=indicesC.get(0);
+            }
+            else{
+                for (int i = 1; i < datosC.size(); i++) {  
+                    double actual=datosC.get(i);
+                    System.out.println("Valor siguiente:"+actual);
+
+                    if(actual < menor) {
+                        menor=actual;
+                        tmp=menores.get(i);
+                        tt=indicesC.get(i);
+                    }
                 }
             }
-        }
-        
-        
-        //Ahora se analiza la prueba
-        celda tmp=null;
-        
-        double menor=solucionesC.get(0).valor/datosC.get(0).valor;
-        
-        System.out.println(menor);
-        
-        for (int i = 1; i < datosC.size(); i++) {  
-            double actual=solucionesC.get(i).valor/datosC.get(i).valor;
-            System.out.println(actual);
             
-            if(actual < menor) {
-                menor=actual;
-                tmp=datosC.get(i);
-            }  
+            System.out.println("El elegido es: "+tmp.valor+",en fila: "+tmp.fila+" y columna: "+tmp.columna);
+            System.out.println("Fila en matriz: "+tt);
+
+            //Ahora se verifica que el valor de celda sea 1, sino hacerlo 1 y operar toda la fila
+            if(tmp.valor==1){
+                System.out.println("El valor ya es 1, seguir");
+            }
+            else{
+                System.out.println("El valor no es 1, dividir");
+                for (int i = 1; i < matriz.size(); i++) { //Recorrer demás filas
+                    ArrayList<celda> aux = matriz.get(i); //Capturar fila n
+
+                    //Recorrer elementos de fila para obtener celdas
+                    for (int j = 0; j < aux.size(); j++) {
+                        if(aux.get(j).fila.equals(tmp.fila)){ //hallar fila
+                            double nuevoValor= aux.get(j).valor/tmp.valor;
+                            aux.get(j).setValor(nuevoValor);
+                        }
+                    }
+                }
+            }
+
+            //Luego hacer 0 celdas de arriba y abajo, implica operar demás valores de filas
+            ArrayList<celda> pivote = matriz.get(tt); //Capturar fila pivote
+
+            ArrayList<Double> pivC = new ArrayList<>(); //lista con elementos de la columna pivote
+            for (int i = 0; i < matriz.size(); i++) { //Recorrer demás filas
+                ArrayList<celda> aux = matriz.get(i); //Capturar fila n
+
+                //Recorrer elementos de fila para obtener celdas
+                for (int j = 0; j < aux.size(); j++) {
+                    if(aux.get(j).columna.equals(tmp.columna)){ //hallar columna
+                        pivC.add(aux.get(j).valor);
+                    }
+                }
+            }
+
+            for (int i = 0; i < matriz.size(); i++) { //Recorrer demás filas
+                ArrayList<celda> aux = matriz.get(i); //Capturar fila n
+
+                //Recorrer elementos de fila para obtener celdas
+                for (int j = 0; j < aux.size(); j++) {
+                    if(aux.get(j).fila.equals(tmp.fila)){ //hallar fila
+                        System.out.println("->");
+                    }
+                    else{
+                        //Verificamos si el valor de celda es positivo
+                        if(pivC.get(i) > 0){
+                            double nuevoD=aux.get(j).valor-(pivC.get(i)*pivote.get(j).valor);
+
+                            aux.get(j).setValor(nuevoD);
+                        }
+                        //verificamos si el valor de celda es negativo
+                        else if(pivC.get(i)<0){
+                            double nuevoD=aux.get(j).valor+(pivC.get(i)*pivote.get(j).valor*-1);
+                            aux.get(j).setValor(nuevoD);
+                        }
+                    }    
+                }
+            }
+
+            //Por ultimo sale artificial de base y entra nueva variable
+            String aux=tmp.columna;
+            for (int i = 0; i < pivote.size(); i++) {
+                pivote.get(i).setFila(aux);
+            }
+            
+            showMatrix(0);
+            fase1();
         }
-        
-        System.out.println("El elegido es: "+tmp.valor+",en fila: "+tmp.fila+" y columna: "+tmp.columna);
-        
-        //Ahora se verifica que el valor de celda sea 1, sino hacerlo 1 y operar toda la fila
-        
-        
-        //Luego hacer 0 celdas de arriba y abajo, implica operar demás valores de filas
-        
-        //Repetir el proceso de forma recursiva, pero validar si se sigue o no
-        
-        //Cuando cumpla condicion de salida entonces fase 1 terminada.
-        
-        
-        
-        
+        else{
+            //Si no quedan numero positivos se verifica condiciones de parada
+            //Primero es que la solucion sea cero:
+            ArrayList<celda> aux = matriz.get(0); //Capturar fila n
+            boolean flag1=false;
+            for (int i = 0; i < aux.size(); i++) {
+                if(aux.get(i).columna.equals("solucion")){
+                    if(aux.get(i).valor==0){
+                        flag1=true;
+                    }
+                }
+            } //si flag1 sigue false es porque la solucion NO es cero
+            
+            boolean flag2=false;
+            //Segunda condicion, que en la base no haya variables artificiales
+            for (int i = 0; i < matriz.size(); i++) { //Recorrer demás filas
+                ArrayList<celda> fila = matriz.get(i); //Capturar fila n
+
+                //basta con saber la fila del primer elemento
+                for (int j = 0; j < variablesArticiales.size(); j++) {
+                    if(variablesArticiales.get(j).equals(fila.get(0).fila)){
+                        flag2=true;
+                    }
+                }
+            } //Si flag2 sigue false es porque no hay variables artificiales
+            
+            //analisis
+            if(flag1 == false && flag2 == true){
+                System.out.println("No hay solucion");
+            }
+            else{
+                System.out.println("Fase 1 terminada...");
+            }
+            
+        } 
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
