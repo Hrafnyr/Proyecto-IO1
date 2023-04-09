@@ -14,11 +14,11 @@ public class classVariable {
     public String name;
     public int cantMin;
     public int horas;
-    public int valor=0;
+    public double valor=0;
     public String exceso;
     public String artificial;
     
-    public classVariable(String id, String name, int valor, int cant,
+    public classVariable(String id, String name, double valor, int cant,
                             int h, String ex, String ar){
         this.id=id;
         this.name=name;
@@ -29,7 +29,7 @@ public class classVariable {
         this.artificial=ar;
     }
     
-    public void setValor(int valor) {
+    public void setValor(double valor) {
         this.valor = valor;
     }
 }
