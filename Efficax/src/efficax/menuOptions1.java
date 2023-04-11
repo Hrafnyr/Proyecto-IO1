@@ -22,7 +22,9 @@ public class menuOptions1 extends javax.swing.JFrame {
     //Variables globales
     int TotalCursos=0;
     int variablesC=0;
-    ArrayList<classVariable> variablesData = new ArrayList();
+    int contStop=0;
+    public static double valorZ=0;
+    public static ArrayList<classVariable> variablesData = new ArrayList();
     ArrayList<String> variablesArticiales = new ArrayList();
     ArrayList<ArrayList> matriz = new ArrayList();
     ArrayList<celda> funcionObjetivo = new ArrayList<>(); //-ax1-bx2...0s1,0s2...1R1+1R2....
@@ -1239,50 +1241,68 @@ public class menuOptions1 extends javax.swing.JFrame {
         }
         else{
             //Si no quedan numero positivos quiere decir que el tablero es óptimo
-            System.out.println("Tablero optimo encontrado...");        
-            
-            
-            //Se procede a obtener los valores de cada variable así como el resultado final
-            System.out.println(" ");
-            
-            ArrayList<celda> resultado = matriz.get(0);
-            //Solucion Z
-            for (int i = 0; i < resultado.size(); i++) {
-                if (resultado.get(i).columna.equals("solucion")) {
-                    System.out.println("Se invertirá "+resultado.get(i).valor+" horas de estudio con la siguiete configuració:");
-                }
-            }
-            
-            //Se recorre la cantidad de variables, 1 por cada vuelta
-            for (int n = 0; n < variablesC; n++) {
                 
-                //en cada vuelta se encuentra la fila de la variable
-                for (int i = 1; i < matriz.size(); i++) {
-                    ArrayList<celda> fila = matriz.get(i);
+            if (contStop==0) {
+                System.out.println("Tablero optimo encontrado...");    
+                contStop++;
+            }
+            else{
+                //Se procede a obtener los valores de cada variable así como el resultado final
+                System.out.println(" ");
 
-                    if (fila.get(i).fila.equals(variablesData.get(n).id)) {
-                        //Cuando se halla la fila, se recorre la columna hasta obtener la solucion
-                        for (int j = 0; j < fila.size(); j++) {
-                            if (fila.get(j).columna.equals("solucion")) {
-                                double valor = fila.get(j).valor;
-                                variablesData.get(n).setValor(valor);
+                ArrayList<celda> resultado = matriz.get(0);
+                //Solucion Z
+                for (int i = 0; i < resultado.size(); i++) {
+                    if (resultado.get(i).columna.equals("solucion")) {
+                        valorZ=resultado.get(i).valor;
+                        System.out.println("Se invertirá "+valorZ+" horas de estudio con la siguiente configuración:");
+                    }
+                }
+
+                //Se recorre la cantidad de variables, 1 por cada vuelta
+                for (int n = 0; n < variablesC; n++) {
+
+                    //en cada vuelta se encuentra la fila de la variable
+                    for (int i = 1; i < matriz.size(); i++) {
+                        ArrayList<celda> fila = matriz.get(i);
+
+                        if (fila.get(i).fila.equals(variablesData.get(n).id)) {
+                            //Cuando se halla la fila, se recorre la columna hasta obtener la solucion
+                            for (int j = 0; j < fila.size(); j++) {
+                                if (fila.get(j).columna.equals("solucion")) {
+                                    double valor = fila.get(j).valor;
+                                    variablesData.get(n).setValor(valor);
+                                }
                             }
                         }
-                    }
-       
-                }
-            }
 
-            //Una vez hallado los valores, se tiene la informacion de solucion
-            for (int i = 0; i < variablesData.size(); i++) {
-                System.out.println(
-                    "Para "+variablesData.get(i).name+
-                    " corresponden "+variablesData.get(i).valor + " cursos");
+                    }
+                }
+
+                //Una vez hallado los valores, se tiene la informacion de solucion
+                for (int i = 0; i < variablesData.size(); i++) {
+                    System.out.println(
+                        "Para "+variablesData.get(i).name+
+                        " corresponden "+variablesData.get(i).valor + " cursos");
+                }
+
+                this.setVisible(false);
+                resultado1 vR = new resultado1();
+                vR.Clear_T(); //limpia tabla
+                vR.addNewRow(); //agrega nuevos datos
+                vR.showLabel();
+                vR.setVisible(true);
+                
+                
+                
             }
-            
         } 
     }
     
+    public void clearAll(){
+        valorZ=0;
+        variablesData.clear();
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private efficax.MyButton backButton1;

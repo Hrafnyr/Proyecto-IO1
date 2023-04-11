@@ -191,6 +191,10 @@ public class MainWindow extends javax.swing.JFrame {
             
             //Mostrar ventana
             menuOptions1 newWindow = new menuOptions1();
+            
+            //limpiar datos
+            newWindow.clearAll();
+            
             newWindow.setVisible(true);
             this.setVisible(false);
             
@@ -199,6 +203,10 @@ public class MainWindow extends javax.swing.JFrame {
             System.out.println("Asignacion, opción 2");
             //Mostrar ventana
             menuOptions2 newWindow2 = new menuOptions2();
+            
+            //limpiar datos
+            newWindow2.limpiar();
+            
             newWindow2.setVisible(true);
             this.setVisible(false);
         }

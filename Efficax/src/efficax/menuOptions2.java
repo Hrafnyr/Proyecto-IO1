@@ -29,7 +29,11 @@ public class menuOptions2 extends javax.swing.JFrame {
     double[][] matrizOriginal;
     ArrayList<String> dias = new ArrayList(); //columnas
     ArrayList<ArrayList> matriz = new ArrayList();
-
+    
+    //Guardar toda la informacion
+    public static ArrayList<String> valores1= new ArrayList();
+    public static ArrayList<String> valores2= new ArrayList();
+    public static String tiempoInvertido = "";
     
     public menuOptions2() {
         initComponents();
@@ -678,13 +682,33 @@ public class menuOptions2 extends javax.swing.JFrame {
                     + " (" 
                     + String.valueOf(valor) + ")");
                 System.out.println();
+                
+                //guardar datos para resultados
+                valores1.add(dias.get(columna));
+                valores2.add(String.valueOf(this.tableEdit.getValueAt(fila, 0)));
             }
             System.out.println("Mínimo de tiempo empleado: "+total);
+            tiempoInvertido=String.valueOf(total);
+            
+            this.setVisible(false);
+            resultado2 vR = new resultado2();
+            vR.Clear_T(); //limpia tabla
+            vR.addNewRow(); //agrega nuevos datos
+            vR.showLabel();
+            vR.setVisible(true);
+            
         } else {
           System.out.println("No se encontró la asignación");
         }  
     }
-  
+    
+    public void limpiar(){
+        valores1.clear();
+        valores2.clear();
+        tiempoInvertido = "";
+    }
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private efficax.MyButton btnBack;
     private efficax.MyButton btnCalcular;
