@@ -8,6 +8,8 @@ package efficax;
 import java.awt.Font;
 import java.awt.Image;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -20,10 +22,14 @@ import javax.swing.table.JTableHeader;
  * @author Moises
  */
 public class menuOptions2 extends javax.swing.JFrame {
-
+    int contLineas=0;
     int contDias=0;
     int cantAct = 0;
-    ArrayList<String> dias = new ArrayList();
+    double[][] dataMatrix;
+    double[][] matrizOriginal;
+    ArrayList<String> dias = new ArrayList(); //columnas
+    ArrayList<ArrayList> matriz = new ArrayList();
+
     
     public menuOptions2() {
         initComponents();
@@ -333,7 +339,8 @@ public class menuOptions2 extends javax.swing.JFrame {
             if(cantidadActividades.equals("")){
                 JOptionPane.showMessageDialog(
                     this, "Debe ingresar la cantidad de actividades");
-            }else 
+            }
+            else 
                 if(search_digit(cantidadActividades)==false){
                     JOptionPane.showMessageDialog(
                             this, "La cantidad debe ser un número");
@@ -371,37 +378,57 @@ public class menuOptions2 extends javax.swing.JFrame {
                         JOptionPane.showMessageDialog(
                             this, "No se han seleccionado días de trabajo");
                     }
-                    else{
-                        System.out.println("Todo bien, mostrando datos:");
-                        System.out.println("->"+cantidadActividades);
-                        for (int i = 0; i < dias.size(); i++) {
-                            System.out.println("->"+dias.get(i));
-                        }
+                    else
+                    {
                         cantAct=Integer.parseInt(cantidadActividades);
-                        
-                        //Metodo que llena la tabla
-                        insertModelNewModel();
-                        
-                        this.jLabel3.setVisible(true);
-                        this.jLabel5.setVisible(true);
-                        this.jLabel6.setVisible(true);
-                        
-                        //Limpiar datos
-                        this.txtCantActividades.setText("");
-                        this.checkLunes.setSelected(false);
-                        this.checkMartes.setSelected(false);
-                        this.checkMiercoles.setSelected(false);
-                        this.checkJueves.setSelected(false);
-                        this.checkViernes.setSelected(false);
-                        this.checkSabado.setSelected(false);
-                        this.checkDomingo.setSelected(false);
-                        }     
-                    }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(
+                        if (dias.size()==cantAct) {
+                            System.out.println("Todo bien, mostrando datos:");
+                            System.out.println("->"+cantidadActividades);
+                            for (int i = 0; i < dias.size(); i++) {
+                                System.out.println("->"+dias.get(i));
+                            }
+                            
+
+                            //Metodo que llena la tabla
+                            insertModelNewModel();
+
+                            this.jLabel3.setVisible(true);
+                            this.jLabel5.setVisible(true);
+                            this.jLabel6.setVisible(true);
+
+                            //Limpiar datos
+                            this.txtCantActividades.setText("");
+                            this.checkLunes.setSelected(false);
+                            this.checkMartes.setSelected(false);
+                            this.checkMiercoles.setSelected(false);
+                            this.checkJueves.setSelected(false);
+                            this.checkViernes.setSelected(false);
+                            this.checkSabado.setSelected(false);
+                            this.checkDomingo.setSelected(false);                                              
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(
+                                this, "El número de actividades deber ser"
+                                    + "igual al número de días a trabajar");
+                            cantAct=0;
+                            dias.clear();
+                            this.txtCantActividades.setText("");
+                            this.checkLunes.setSelected(false);
+                            this.checkMartes.setSelected(false);
+                            this.checkMiercoles.setSelected(false);
+                            this.checkJueves.setSelected(false);
+                            this.checkViernes.setSelected(false);
+                            this.checkSabado.setSelected(false);
+                            this.checkDomingo.setSelected(false);
+                        }
+                    }     
+                }
+        } 
+            catch (Exception e) 
+            {
+                JOptionPane.showMessageDialog(
                             this, "Los datos ingresados no son válidos");
-        }
-        
+            }     
     }//GEN-LAST:event_buttonGenerateModelActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
@@ -413,30 +440,37 @@ public class menuOptions2 extends javax.swing.JFrame {
 
     private void btnCalcularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcularActionPerformed
         //Validaciones
-        this.tableEdit.clearSelection();
-        if(this.tableEdit.isEditing()){//si se esta edtando la tabla
-            this.tableEdit.getCellEditor().stopCellEditing();//detenga la edicion
-        }
-        
-        if(searchEmptyValues()==true){
+        if (this.tableEdit.getRowCount()==0) {
             JOptionPane.showMessageDialog(
-                    this, "No puede dejar espacios vacíos");
-        }else
-            //Validar que sean números enteros
-            if(search_digitInTable()==false){
-                JOptionPane.showMessageDialog(
-                    this, "Los datos deben ser números");
+                        this, "No se ha generado el modelo");
+        }
+        else{
+            this.tableEdit.clearSelection();
+            if(this.tableEdit.isEditing()){//si se esta edtando la tabla
+                this.tableEdit.getCellEditor().stopCellEditing();//detenga la edicion
             }
-            else{
-                //validar numeros mayores que cero
-                if(digitPositive()==false){
+
+            if(searchEmptyValues()==true){
+                JOptionPane.showMessageDialog(
+                        this, "No puede dejar espacios vacíos");
+            }else
+                //Validar que sean números enteros
+                if(search_digitInTable()==false){
                     JOptionPane.showMessageDialog(
-                        this, "Los datos deben ser positivos");
+                        this, "Los datos deben ser números");
                 }
                 else{
-                    System.out.println("Todo bien");
+                    //validar numeros mayores que cero
+                    if(digitPositive()==false){
+                        JOptionPane.showMessageDialog(
+                            this, "Los datos deben ser positivos");
+                    }
+                    else{
+                        System.out.println("Todo bien");
+                        createMatrix();
+                    }
                 }
-            }
+        }    
     }//GEN-LAST:event_btnCalcularActionPerformed
 
     /**
@@ -580,6 +614,77 @@ public class menuOptions2 extends javax.swing.JFrame {
         return true;
     }
     
+    private void createMatrix(){
+        //como es matriz cuadrada, usar cantidad de actividades
+        for (int i = 0; i < cantAct; i++) {
+            ArrayList<cell> fila = new ArrayList<>();
+            for (int j = 0; j < cantAct; j++) {
+                String filaT = String.valueOf(this.tableEdit.getValueAt(i, 0));
+                String column= dias.get(j);
+                double valor = Double.parseDouble(
+                                String.valueOf(
+                                   this.tableEdit.getValueAt(i, j+1)));
+                cell nuevaCelda = new cell(filaT,column,valor,false);
+                fila.add(nuevaCelda);
+            }
+            matriz.add(fila);
+        }
+        
+        
+        
+        dataMatrix = new double[cantAct][cantAct];
+        matrizOriginal= new double[cantAct][cantAct];
+        for (int i = 0; i < cantAct; i++) {
+            ArrayList<cell> fila = matriz.get(i);
+            for (int j = 0; j < cantAct; j++) {
+                dataMatrix[i][j]=fila.get(j).valor;
+                matrizOriginal[i][j]=fila.get(j).valor;
+            }
+        }
+        System.out.println("Matriz original");
+        for (int i = 0; i < dataMatrix[0].length; i++) {
+            for (int j = 0; j < cantAct; j++) {
+                System.out.print("     ");
+                System.out.print(dataMatrix[i][j]);
+                System.out.print("     ");
+            }
+            System.out.println();
+        }
+        
+        
+        metodoHungaro ha = new metodoHungaro(dataMatrix);
+        int[][] asignacion = ha.findOptimalAssignment();
+
+        if (asignacion.length > 0) {
+            System.out.println("Matriz reducida");
+            int total=0;
+            for (int i = 0; i < dataMatrix[0].length; i++) {
+                for (int j = 0; j < cantAct; j++) {
+                    System.out.print("     ");
+                    System.out.print(dataMatrix[i][j]);
+                    System.out.print("     ");
+                }
+                System.out.println();
+            }
+            
+            for (int i = 0; i < asignacion.length; i++) {
+                
+                int columna = asignacion[i][0];  
+                int fila = asignacion[i][1];
+                double valor = matrizOriginal[fila][columna];
+                total+=valor;
+                System.out.print(dias.get(columna)
+                    + "\t=> "+this.tableEdit.getValueAt(fila, 0)+ " "
+                    + " (" 
+                    + String.valueOf(valor) + ")");
+                System.out.println();
+            }
+            System.out.println("Mínimo de tiempo empleado: "+total);
+        } else {
+          System.out.println("No se encontró la asignación");
+        }  
+    }
+  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private efficax.MyButton btnBack;
     private efficax.MyButton btnCalcular;

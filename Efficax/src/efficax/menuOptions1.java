@@ -301,7 +301,7 @@ public class menuOptions1 extends javax.swing.JFrame {
     }//GEN-LAST:event_myButton6ActionPerformed
 
     private void myButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myButton4ActionPerformed
-            // TODO add your handling code here:
+        // TODO add your handling code here:
         String cursosT = this.txtTotalCursos.getText();
         
         if(cursosT.equals("")){
@@ -318,10 +318,23 @@ public class menuOptions1 extends javax.swing.JFrame {
                         this, "Debe ingresar mínimo 2 datos");
                 }
                 else{
-                    System.out.println("Todo bien");
-                    getDatafromTable();
-                    TotalCursos=Integer.parseInt(this.txtTotalCursos.getText());
-                }
+                    //validar que cant de curso sea > que la suma
+                    int sumaParcial=0;
+                    for (int i = 0; i < this.dataTable1.getRowCount(); i++) {
+                        sumaParcial+= Integer.parseInt(
+                                      String.valueOf(this.dataTable1.getValueAt(i,1)));
+                    }
+                    int t=Integer.parseInt(this.txtTotalCursos.getText());
+                    if(t<=sumaParcial){
+                        JOptionPane.showMessageDialog(
+                            this, "El total de cursos debe ser mayor a la suma de la cantidad mínima de cursos de cada área");
+                    }
+                    else{
+                        System.out.println("Todo bien");
+                        getDatafromTable();
+                        TotalCursos=Integer.parseInt(this.txtTotalCursos.getText());
+                    }
+                }    
     }//GEN-LAST:event_myButton4ActionPerformed
 
     /**
