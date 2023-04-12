@@ -412,8 +412,8 @@ public class menuOptions2 extends javax.swing.JFrame {
                         }
                         else{
                             JOptionPane.showMessageDialog(
-                                this, "El número de actividades deber ser"
-                                    + "igual al número de días a trabajar");
+                                this, "El número de actividades debe ser"
+                                    + " igual al número de días a trabajar");
                             cantAct=0;
                             dias.clear();
                             this.txtCantActividades.setText("");
