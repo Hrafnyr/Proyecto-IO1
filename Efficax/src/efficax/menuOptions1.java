@@ -425,7 +425,7 @@ public class menuOptions1 extends javax.swing.JFrame {
         this.txtHoras.setText("");
     }
     
-    private void cleanTable(){
+        private void cleanTable(){
         DefaultTableModel model = 
                 (DefaultTableModel) this.dataTable1.getModel();
         
@@ -1093,11 +1093,12 @@ public class menuOptions1 extends javax.swing.JFrame {
         double mayor = arr.get(0).valor;
         //Es decir que sería: cantVaribles*2
         int stop = variablesC*2;
+        
         while (index < stop) {    
-            
-            if (arr.get(index).valor > mayor) {
+            double siguiente = arr.get(index).valor;
+            if ( siguiente > mayor) {
                     System.out.println("Entrando");
-                    mayor = arr.get(index).valor;
+                    mayor = siguiente;
                     column_b = arr.get(index).columna;
                     System.out.println(column_b);
             }
@@ -1113,7 +1114,7 @@ public class menuOptions1 extends javax.swing.JFrame {
             double denominador=0;
            
             //Ahora se analiza la prueba
-            celda tmp=null;
+      
             int indiceTMP=1;
             
             ArrayList<Double> datosC = new ArrayList<>(); //guardar cocientes
@@ -1148,155 +1149,163 @@ public class menuOptions1 extends javax.swing.JFrame {
                 
             }            
             
-            double menor=datosC.get(0);
-
-            System.out.println("Valor menor inicial:"+menor);
-            int tt=0;
-            if(datosC.size()==1){
-                tmp=menores.get(0);
-                tt=indicesC.get(0);
+            //Si en Z hay positivo pero sus valores de columnas son 0
+            //ignorar columna y buscar otra
+            
+            if (datosC.size()==0) {
+                System.out.println("Cantidad de cocientes validos:"+datosC.size());
             }
-            else{
-                for (int i = 1; i < datosC.size(); i++) {  
-                    double actual=datosC.get(i);
-                    System.out.println("Valor siguiente:"+actual);
+            else{ 
+                celda tmp=menores.get(0);
+                double menor=datosC.get(0);
 
-                    if(actual < menor) {
-                        menor=actual;
-                        tmp=menores.get(i);
-                        tt=indicesC.get(i);
+                System.out.println("Valor menor inicial:"+menor);
+                int tt=indicesC.get(0);
+                if(datosC.size()==1){
+                    tmp=menores.get(0);
+                    tt=indicesC.get(0);
+                }
+                else{
+                    for (int i = 1; i < datosC.size(); i++) {  
+                        double actual=datosC.get(i);
+                        System.out.println("Valor siguiente:"+actual);
+                        if(actual < menor) {
+                            menor=actual;
+                            tmp=menores.get(i);
+                            tt=indicesC.get(i);
+                        }
                     }
                 }
-            }
-            
-            System.out.println("El elegido es: "+tmp.valor+",en fila: "+tmp.fila+" y columna: "+tmp.columna);
-            System.out.println("Fila en matriz: "+tt);
 
-            //Ahora se verifica que el valor de celda sea 1, sino hacerlo 1 y operar toda la fila
-            if(tmp.valor==1){
-                System.out.println("El valor ya es 1, seguir");
-            }
-            else{
-                System.out.println("El valor no es 1, dividir");
-                for (int i = 1; i < matriz.size(); i++) { //Recorrer demás filas
+                System.out.println("El elegido es: "+tmp.valor+",en fila: "+tmp.fila+" y columna: "+tmp.columna);
+                System.out.println("Fila en matriz: "+tt);
+
+                //Ahora se verifica que el valor de celda sea 1, sino hacerlo 1 y operar toda la fila
+                if(tmp.valor==1){
+                    System.out.println("El valor ya es 1, seguir");
+                }
+                else{
+                    System.out.println("El valor no es 1, dividir");
+                    for (int i = 1; i < matriz.size(); i++) { //Recorrer demás filas
+                        ArrayList<celda> aux = matriz.get(i); //Capturar fila n
+
+                        //Recorrer elementos de fila para obtener celdas
+                        for (int j = 0; j < aux.size(); j++) {
+                            if(aux.get(j).fila.equals(tmp.fila)){ //hallar fila
+                                double nuevoValor= aux.get(j).valor/tmp.valor;
+                                aux.get(j).setValor(nuevoValor);
+                            }
+                        }
+                    }
+                }
+
+                //Luego hacer 0 celdas de arriba y abajo, implica operar demás valores de filas
+                ArrayList<celda> pivote = matriz.get(tt); //Capturar fila pivote
+
+                ArrayList<Double> pivC = new ArrayList<>(); //lista con elementos de la columna pivote
+                for (int i = 0; i < matriz.size(); i++) { //Recorrer demás filas
+                    ArrayList<celda> aux = matriz.get(i); //Capturar fila n
+
+                    //Recorrer elementos de fila para obtener celdas
+                    for (int j = 0; j < aux.size(); j++) {
+                        if(aux.get(j).columna.equals(tmp.columna)){ //hallar columna
+                            pivC.add(aux.get(j).valor);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < matriz.size(); i++) { //Recorrer demás filas
                     ArrayList<celda> aux = matriz.get(i); //Capturar fila n
 
                     //Recorrer elementos de fila para obtener celdas
                     for (int j = 0; j < aux.size(); j++) {
                         if(aux.get(j).fila.equals(tmp.fila)){ //hallar fila
-                            double nuevoValor= aux.get(j).valor/tmp.valor;
-                            aux.get(j).setValor(nuevoValor);
+                            System.out.println("->");
                         }
+                        else{
+                            //Verificamos si el valor de celda es positivo
+                            if(pivC.get(i) > 0){
+                                double nuevoD=aux.get(j).valor-(pivC.get(i)*pivote.get(j).valor);
+
+                                aux.get(j).setValor(nuevoD);
+                            }
+                            //verificamos si el valor de celda es negativo
+                            else if(pivC.get(i)<0){
+                                double nuevoD=aux.get(j).valor+(pivC.get(i)*pivote.get(j).valor*-1);
+                                aux.get(j).setValor(nuevoD);
+                            }
+                        }    
                     }
                 }
-            }
 
-            //Luego hacer 0 celdas de arriba y abajo, implica operar demás valores de filas
-            ArrayList<celda> pivote = matriz.get(tt); //Capturar fila pivote
-
-            ArrayList<Double> pivC = new ArrayList<>(); //lista con elementos de la columna pivote
-            for (int i = 0; i < matriz.size(); i++) { //Recorrer demás filas
-                ArrayList<celda> aux = matriz.get(i); //Capturar fila n
-
-                //Recorrer elementos de fila para obtener celdas
-                for (int j = 0; j < aux.size(); j++) {
-                    if(aux.get(j).columna.equals(tmp.columna)){ //hallar columna
-                        pivC.add(aux.get(j).valor);
-                    }
+                //Por ultimo sale artificial de base y entra nueva variable
+                String aux=tmp.columna;
+                for (int i = 0; i < pivote.size(); i++) {
+                    pivote.get(i).setFila(aux);
                 }
+
+                showMatrix(0);
+                fase2();
             }
-
-            for (int i = 0; i < matriz.size(); i++) { //Recorrer demás filas
-                ArrayList<celda> aux = matriz.get(i); //Capturar fila n
-
-                //Recorrer elementos de fila para obtener celdas
-                for (int j = 0; j < aux.size(); j++) {
-                    if(aux.get(j).fila.equals(tmp.fila)){ //hallar fila
-                        System.out.println("->");
-                    }
-                    else{
-                        //Verificamos si el valor de celda es positivo
-                        if(pivC.get(i) > 0){
-                            double nuevoD=aux.get(j).valor-(pivC.get(i)*pivote.get(j).valor);
-
-                            aux.get(j).setValor(nuevoD);
-                        }
-                        //verificamos si el valor de celda es negativo
-                        else if(pivC.get(i)<0){
-                            double nuevoD=aux.get(j).valor+(pivC.get(i)*pivote.get(j).valor*-1);
-                            aux.get(j).setValor(nuevoD);
-                        }
-                    }    
-                }
-            }
-
-            //Por ultimo sale artificial de base y entra nueva variable
-            String aux=tmp.columna;
-            for (int i = 0; i < pivote.size(); i++) {
-                pivote.get(i).setFila(aux);
-            }
-            
-            showMatrix(0);
-            fase2();
         }
         else{
-            //Si no quedan numero positivos quiere decir que el tablero es óptimo
-                
-            if (contStop==0) {
-                System.out.println("Tablero optimo encontrado...");    
-                contStop++;
-            }
-            else{
-                //Se procede a obtener los valores de cada variable así como el resultado final
-                System.out.println(" ");
+                //Si no quedan numero positivos quiere decir que el tablero es óptimo
 
-                ArrayList<celda> resultado = matriz.get(0);
-                //Solucion Z
-                for (int i = 0; i < resultado.size(); i++) {
-                    if (resultado.get(i).columna.equals("solucion")) {
-                        valorZ=resultado.get(i).valor;
-                        System.out.println("Se invertirá "+valorZ+" horas de estudio con la siguiente configuración:");
-                    }
+                if (contStop<variablesC) {
+                    System.out.println("Tablero optimo encontrado...");    
+                    contStop++;
                 }
+                else{
+                    //Se procede a obtener los valores de cada variable así como el resultado final
+                    System.out.println(" ");
 
-                //Se recorre la cantidad de variables, 1 por cada vuelta
-                for (int n = 0; n < variablesC; n++) {
+                    ArrayList<celda> resultado = matriz.get(0);
+                    //Solucion Z
+                    for (int i = 0; i < resultado.size(); i++) {
+                        if (resultado.get(i).columna.equals("solucion")) {
+                            valorZ=resultado.get(i).valor;
+                            System.out.println("Se invertirá "+valorZ+" horas de estudio con la siguiente configuración:");
+                        }
+                    }
 
-                    //en cada vuelta se encuentra la fila de la variable
-                    for (int i = 1; i < matriz.size(); i++) {
-                        ArrayList<celda> fila = matriz.get(i);
+                    //Se recorre la cantidad de variables, 1 por cada vuelta
+                    for (int n = 0; n < variablesC; n++) {
 
-                        if (fila.get(i).fila.equals(variablesData.get(n).id)) {
-                            //Cuando se halla la fila, se recorre la columna hasta obtener la solucion
-                            for (int j = 0; j < fila.size(); j++) {
-                                if (fila.get(j).columna.equals("solucion")) {
-                                    double valor = fila.get(j).valor;
-                                    variablesData.get(n).setValor(valor);
+                        //en cada vuelta se encuentra la fila de la variable
+                        for (int i = 1; i < matriz.size(); i++) {
+                            ArrayList<celda> fila = matriz.get(i);
+
+                            if (fila.get(i).fila.equals(variablesData.get(n).id)) {
+                                //Cuando se halla la fila, se recorre la columna hasta obtener la solucion
+                                for (int j = 0; j < fila.size(); j++) {
+                                    if (fila.get(j).columna.equals("solucion")) {
+                                        double valor = fila.get(j).valor;
+                                        variablesData.get(n).setValor(valor);
+                                    }
                                 }
                             }
+
                         }
-
                     }
-                }
 
-                //Una vez hallado los valores, se tiene la informacion de solucion
-                for (int i = 0; i < variablesData.size(); i++) {
-                    System.out.println(
-                        "Para "+variablesData.get(i).name+
-                        " corresponden "+variablesData.get(i).valor + " cursos");
-                }
+                    //Una vez hallado los valores, se tiene la informacion de solucion
+                    for (int i = 0; i < variablesData.size(); i++) {
+                        System.out.println(
+                            "Para "+variablesData.get(i).name+
+                            " corresponden "+variablesData.get(i).valor + " cursos");
+                    }
 
-                this.setVisible(false);
-                resultado1 vR = new resultado1();
-                vR.Clear_T(); //limpia tabla
-                vR.addNewRow(); //agrega nuevos datos
-                vR.showLabel();
-                vR.setVisible(true);
-                
-                
-                
-            }
-        } 
+                    this.setVisible(false);
+                    resultado1 vR = new resultado1();
+                    vR.Clear_T(); //limpia tabla
+                    vR.addNewRow(); //agrega nuevos datos
+                    vR.showLabel();
+                    vR.setVisible(true);
+
+
+
+                }
+        }
     }
     
     public void clearAll(){
